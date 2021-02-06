@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>D3 Tabular Vis</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+<h1>Table Vis</h1>
+<script type="text/javascript">
+  var w = 1600;
+  var h = 500;
+  var cellpadding = 2;
+
+  var svg = d3.select("body").append("svg")
+          .attr("width", w)
+          .attr("height", h);
+
+  d3.csv('assets/data/a1-cereals.csv')
+          .then(function(data){
+          console.log(data);
+
+          var yScale = d3.scaleLinear()
+                  .domain([0, d3.max(data, function(d){
+                      return +d.Calories;
+                  })])
+              .range([0, h]);
+
+              var colorScale = d3.scaleLinear()
+                      .domain([0, d3.max(data, function(d){
+                          return +d.Calories;
+                      })])
+                  .range([255, 0]);
+
+              var yScale = d3.scaleLinear()
+                      .domain([0, d3.max(data, function(d){
+                          return +d.Calories;
+                      })])
+                   .range([0, h/2]);
+
+              var colorScale = d3.scaleLinear()
+                  .domain([0, d3.max(data, function(d){
+                      return +d.Calories;
+                  })])
+                  .range([255, 0]);
+
+          svg.selectAll("rect")
+              .data(data)
+              .enter()
+              .append("rect")
+              .attr("width", w / data.length)
+              .attr("width", w / data.length - cellpadding)
+              .attr("height", h)
+              .attr("x", function(d, i){
+                  return w / data.length * i;
+              })
+              .attr("height", function(d){
+                  return yScale(d.Calories);
+              })
+              .attr("y", function(d){
+                  return h/2-yScale(d.Calories);
+              })
+          .attr("fill", function(d){
+                    var f = colorScale(d.Calories);
+               if(f <= 25.5)
+                     return "rgb(" + 255 + ",0,0)";
+               else
+                    return "rgb(" + f + "," + f + "," + f + ")";
+                   });
+               svg.selectAll("text")
+                .data(data)
+                .enter()
+                .append("text")
+                   .text(function(d){
+                      return d.Cereal;
+                    })
+               .attr("transform", function(d, i){
+                    return "translate(" + w / data.length * i +
+                             ","+h/2+")"+"rotate(90)"
+
+                      })
+                  })
+              .attr("y", function(d){
+                  return h-yScale(d.Calories);
+              })
+
+      .attr("fill", function(d){
+          var f = colorScale(d.Calories);
+          if(f <= 25.5)
+              return "rgb(" + 255 + ",0,0)";
+          else
+              return "rgb(" + f + "," + f + "," + f + ")";
+      });
+
+   </script>
+</body>
+</html>
